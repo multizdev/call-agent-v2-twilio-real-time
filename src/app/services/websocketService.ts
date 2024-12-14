@@ -73,6 +73,9 @@ function setupWebSocket(server: Server) {
             streamSid: streamSid,
             media: { payload: Buffer.from(response.delta, 'base64').toString('base64') },
           };
+
+          console.log("CALL STATE", callState);
+
           const { audioStreamId, websocketConnection } = callState;
 
           // Send mediaMessage through WebSocket
