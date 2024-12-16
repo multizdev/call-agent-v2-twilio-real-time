@@ -78,6 +78,8 @@ function setupWebSocket(server: Server) {
 
           const { audioStreamId, websocketConnection } = callState;
 
+          console.log("AUDIO STREAM ID: ", audioStreamId);
+
           // Send mediaMessage through WebSocket
           if (audioStreamId && websocketConnection.readyState === ws.OPEN) {
             console.log("PLAYING BACK====================================================");
@@ -109,7 +111,7 @@ function setupWebSocket(server: Server) {
           console.log('Audio Connected for: ', callId);
           break;
         case 'start':
-          console.log('Audio Started for: ', callId);
+          console.log('Audio Started for: ', callId, "SID: ", data.start.streamSid);
           callState.audioStreamId = data.start.streamSid;
           break;
         case 'media':
@@ -123,14 +125,6 @@ function setupWebSocket(server: Server) {
           } else {
             console.error('OpenAI WebSocket is not ready. Current state:', openAiWs.readyState);
           }
-          /*if (openAiWs.readyState !== openAiWs.OPEN) {
-            const audioAppend = {
-              type: 'input_audio_buffer.append',
-              audio: data.media.payload,
-            };
-
-            openAiWs.send(JSON.stringify(audioAppend));
-          }*/
           break;
         case 'closed':
           console.log('Closed: ', data);
