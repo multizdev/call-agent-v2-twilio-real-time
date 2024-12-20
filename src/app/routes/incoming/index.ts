@@ -20,6 +20,7 @@ incomingRouter.post('/answer-call',(req: Request, res: Response) => {
 
     const callState = createCallState(callId);
 
+    callState.callId = callId;
     callState.messages = [...initialMessages];
     callState.currentCall = response;
 

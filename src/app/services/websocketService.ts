@@ -30,14 +30,12 @@ function setupWebSocket(server: Server) {
     callState.websocketConnection = ws;
 
     // Establish OpenAI WebSocket connection
-    const openAiWs: any = new WebSocket('wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01', {
+    const openAiWs: any = new WebSocket(process.env.OPENAI_REALTIME_WEBSOCKET || '', {
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "OpenAI-Beta": "realtime=v1"
       }
     });
-
-    let streamSid: string | null = null;
 
     const sendSessionUpdate = () => {
       const sessionUpdate = {
@@ -67,18 +65,14 @@ function setupWebSocket(server: Server) {
         const response = JSON.parse(data);
 
         if (response.type === 'response.audio.delta' && response.delta) {
+          const { audioStreamId, websocketConnection } = callState;
+
           // Audio response from OpenAI
           const audioDelta = {
             event: 'media',
-            streamSid: streamSid,
+            streamSid: audioStreamId,
             media: { payload: Buffer.from(response.delta, 'base64').toString('base64') },
           };
-
-          console.log("CALL STATE", callState);
-
-          const { audioStreamId, websocketConnection } = callState;
-
-          console.log("AUDIO STREAM ID: ", audioStreamId);
 
           // Send mediaMessage through WebSocket
           if (audioStreamId && websocketConnection.readyState === ws.OPEN) {

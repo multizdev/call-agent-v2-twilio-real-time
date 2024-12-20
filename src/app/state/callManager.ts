@@ -3,6 +3,7 @@ import { ChatCompletionMessageParam } from 'openai/resources';
 import VoiceResponse from 'twilio/lib/twiml/VoiceResponse';
 
 export type CallState = {
+  callId: string | null;
   audioStreamId: string | null;
   currentCall: VoiceResponse | null;
   websocketConnection: any;
@@ -13,6 +14,7 @@ const callStates: { [callId: string]: CallState } = {};
 
 export const createCallState = (callId: string): CallState => {
   const initialState: CallState = {
+    callId: null,
     audioStreamId: null,
     currentCall: null,
     websocketConnection: null,
